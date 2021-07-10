@@ -54,7 +54,7 @@ struct Dice {
         return possible_sides[index % size]; 
      }
 
-     int nextDice() {
+     void nextDice() {
         index++;
         index %= size; 
      }
@@ -178,7 +178,7 @@ struct Buttons {
     }
   }
 
-  boolean released(int index, unsigned long now) {
+  boolean released(int index) {
       index %= siz;
       boolean pr = butts[index].pressedNow();
       if (pr && butts[index].pressed) {
@@ -353,7 +353,7 @@ void loop() {
   } else if (buttons.hold(btn1, now)) {
     dice.generate(now);
     
-  } else if (buttons.released(btn1, now)) {
+  } else if (buttons.released(btn1)) {
     dice.updateLatestResult(now);
     
   } else if (buttons.pressed(btn2, now)) {
