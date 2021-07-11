@@ -54,7 +54,7 @@ struct Dice {
         return possible_sides[index % size]; 
      }
 
-     int nextDice() {
+     void nextDice() {
         index++;
         index %= size; 
      }
@@ -124,8 +124,12 @@ struct Dice {
       }
   }
 
-  void onButtonOnePressed() {
-    current_state = states::NORMAL;  
+  void onButtonOnePressed(unsigned long now) {
+    if (current_state == states::NORMAL) {
+        generate(now);
+    } else {
+      current_state = states::NORMAL;
+    }  
   }
 
   void onButtonTwoPressed() {
@@ -178,7 +182,7 @@ struct Buttons {
     }
   }
 
-  boolean released(int index, unsigned long now) {
+  boolean released(int index) {
       index %= siz;
       boolean pr = butts[index].pressedNow();
       if (pr && butts[index].pressed) {
@@ -193,14 +197,13 @@ struct Buttons {
     index %= siz;
     if (butts[index].time_of_press + 20 <= now) {
       boolean pr = butts[index].pressedNow();
-      if (index > 0 && pr && butts[index].pressed) {
-          butts[index].pressed = false;  
-      }
       if (!pr && !butts[index].pressed) {
         butts[index].pressed = true;
         butts[index].time_of_press = now;
         return true;
-      } 
+      } else if (index > 0 && pr && butts[index].pressed) {
+         butts[index].pressed = false;  
+      }
     }
     return false;
   }
@@ -347,14 +350,18 @@ void setup() {
 
 void loop() {
   unsigned long now = millis();
+
+  if (buttons.released(btn1)) {
+    dice.updateLatestResult(now);
+    
+  } 
+ 
+  
   if (buttons.pressed(btn1, now)) {
-    dice.onButtonOnePressed();
+    dice.onButtonOnePressed(now);
     
   } else if (buttons.hold(btn1, now)) {
     dice.generate(now);
-    
-  } else if (buttons.released(btn1, now)) {
-    dice.updateLatestResult(now);
     
   } else if (buttons.pressed(btn2, now)) {
     dice.onButtonTwoPressed();
@@ -363,5 +370,6 @@ void loop() {
     dice.onButtonThreePressed();
     
   }
+  
   display.update(now);
 }
