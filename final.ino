@@ -363,6 +363,12 @@ void loop() {
   } else if (buttons.hold(btn1, now)) {
     dice.generate(now);
     
+<<<<<<< HEAD
+=======
+  } else if (buttons.released(btn1)) {
+    dice.updateLatestResult(now);
+    
+>>>>>>> 55b644e0cec9d543fbc6ab69844f9f56fff8b65e
   } else if (buttons.pressed(btn2, now)) {
     dice.onButtonTwoPressed();
     
